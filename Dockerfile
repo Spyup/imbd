@@ -67,7 +67,7 @@ ENV JAVA_HOME /opt/jdk1.8.0_371
 ENV JRE_HOME=${JAVA_HOME}/jre
 ENV CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
 ENV CUDA_PATH /usr/local/cuda-12/bin
-ENV PATH=${CUDA_PATH}/${JAVA_HOME}/bin:$PATH
+ENV PATH=${CUDA_PATH}:${JAVA_HOME}/bin:$PATH
 COPY profile /etc/profile
 
 ### R packages
