@@ -72,7 +72,7 @@ COPY profile /etc/profile
 
 ### R packages
 RUN R CMD javareconf
-RUN apt install ocl-icd-opencl-dev libxml2-dev libgmp3-dev opencl-headers libssl-dev libcurl4-openssl-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libtiff5-dev libudunits2-dev libgdal-dev -y
+RUN apt install ocl-icd-opencl-dev libxml2-dev libgmp3-dev opencl-headers libssl-dev libcurl4-openssl-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libtiff5-dev libudunits2-dev libgdal-dev gfortran -y
 RUN ln -s /usr/lib/x86_64-linux-gnu/libOpenCL.so.1 /usr/lib/libOpenCL.so
 RUN Rscript -e "options('repos' = c(CRAN='https://cran.csie.ntu.edu.tw/'))"
 RUN Rscript -e "install.packages(c('xgboost', 'readxl', 'xlsx', 'tidyverse', 'klaR', 'ClusterR', 'pracma', 'fields', 'filehashSQLite', 'filehash', 'LatticeKrig', 'spam', 'RSpectra', 'filematrix', 'autoFRK', 'Metrics', 'adabag', 'neuralnet', 'caTools', 'nnet', 'caret', 'ada', 'randomForest', 'inTrees', 'UBL', 'cvTools', 'gdata', 'moments', 'zoo', 'MASS', 'chemometrics', 'rpart', 'e1071'),verbose=TRUE)"
