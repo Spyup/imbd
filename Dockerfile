@@ -1,4 +1,4 @@
-FROM docker.io/nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+FROM docker.io/nvidia/cuda:11.7.0-cudnn8-devel-ubuntu22.04
 MAINTAINER Spyup <jason88tu@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -9,6 +9,7 @@ RUN apt update && apt upgrade -y && \
     apt install -y iputils-ping && \
     apt install -y vim nano && \
     apt install -y openssh-server && \
+    apt install -y nvidia-cuda-toolkit && \
     apt clean
 
 ### Python3.10
