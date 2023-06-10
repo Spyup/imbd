@@ -1,4 +1,5 @@
-FROM docker.io/nvidia/cuda:11.4.3-cudnn8-devel-ubuntu20.04
+FROM docker.io/nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04
+
 MAINTAINER Spyup <jason88tu@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -17,13 +18,6 @@ RUN apt install -y software-properties-common && \
     apt-get install python3.8 -y && \
     apt clean && \
     cd /usr/bin/ ; rm python3 ; ln -s python3.8 python3
-
-### gcc-7 g++-7
-RUN apt install gcc-7 g++-7 -y && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 9 && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 1 && \
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 9 && \
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 1
 
 ### Pip3 && pipenv
 RUN apt install -y python3-pip && \
@@ -73,7 +67,7 @@ RUN rm jdk-8u333-linux-x64.tar.gz
 ENV JAVA_HOME /opt/jdk1.8.0_333
 ENV JRE_HOME=${JAVA_HOME}/jre
 ENV CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
-ENV CUDA_PATH /usr/local/cuda-12
+ENV CUDA_PATH /usr/local/cuda
 ENV PATH=${CUDA_PATH}/bin:${JAVA_HOME}/bin:$PATH
 COPY profile /etc/profile
 
