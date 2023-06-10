@@ -9,7 +9,6 @@ RUN apt update && apt upgrade -y && \
     apt install -y iputils-ping && \
     apt install -y vim nano && \
     apt install -y openssh-server && \
-    apt install -y nvidia-cuda-toolkit && \
     apt clean
 
 ### Python3.10
