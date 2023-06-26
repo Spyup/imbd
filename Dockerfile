@@ -9,6 +9,7 @@ RUN apt update && apt upgrade -y && \
     apt install -y iputils-ping && \
     apt install -y vim nano && \
     apt install -y openssh-server && \
+    apt install -y git zip htop screen libgl1-mesa-glx && \    
     apt clean
 
 ### Python3.10
@@ -17,6 +18,13 @@ RUN apt install -y software-properties-common && \
     apt-get install python3.10 -y && \
     apt clean && \
     cd /usr/bin/ ; rm python3 ; ln -s python3.10 python3
+
+### Python3.8
+RUN add-apt-repository ppa:deadsnakes/ppa -y && \
+    apt update -y && \
+    apt-get install python3.8 -y && \
+    apt-get install python3.8-distutils -y && \
+    apt clean
 
 ### Pip3 && pipenv
 RUN apt install -y python3-pip && \
@@ -48,6 +56,14 @@ WORKDIR tf_keras
 RUN pipenv install --verbose --python 3.10 -r requirements.txt --skip-lock && \
     rm -rf ~/.cache
 
+
+### Build Env (Yolov7 version)
+WORKDIR /envs
+RUN git clone https://github.com/WongKinYiu/yolov7.git
+WORKDIR yolov7
+RUN pipenv install --verbose --python 3.8 -r requirements.txt --skip-lock && \
+    rm -rf ~/.cache
+
 WORKDIR /envs
 
 ### R for 4.3
@@ -66,7 +82,7 @@ RUN rm jdk-8u371-linux-x64.tar.gz
 ENV JAVA_HOME /opt/jdk1.8.0_371
 ENV JRE_HOME=${JAVA_HOME}/jre
 ENV CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
-ENV CUDA_PATH /usr/local/cuda-12
+ENV CUDA_PATH /usr/local/cuda
 ENV PATH=${CUDA_PATH}/bin:${JAVA_HOME}/bin:$PATH
 COPY profile /etc/profile
 
