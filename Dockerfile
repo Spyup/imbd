@@ -1,4 +1,4 @@
-FROM docker.io/nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04
+FROM docker.io/nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
 
 MAINTAINER Spyup <jason88tu@gmail.com>
 
@@ -10,6 +10,7 @@ RUN apt update && apt upgrade -y && \
     apt install -y iputils-ping && \
     apt install -y vim nano && \
     apt install -y openssh-server && \
+    apt install -y git zip htop screen libgl1-mesa-glx && \
     apt clean
 
 ### Python3.8
@@ -21,7 +22,7 @@ RUN apt install -y software-properties-common && \
 
 ### Pip3 && pipenv
 RUN apt install -y python3-pip && \
-    apt-get install -y python3-apt && \
+    apt-get install -y python3-apt python3-distutils && \
     apt clean
 RUN pip3 install -U pip
 RUN pip3 install -U setuptools
@@ -46,6 +47,13 @@ WORKDIR /envs
 RUN mkdir tf_keras
 COPY tf_keras_version.txt tf_keras/requirements.txt
 WORKDIR tf_keras
+RUN pipenv install --verbose --python 3.8 -r requirements.txt --skip-lock && \
+    rm -rf ~/.cache
+
+### Build Env (Yolov7 version)
+WORKDIR /envs
+RUN git clone https://github.com/WongKinYiu/yolov7.git
+WORKDIR yolov7
 RUN pipenv install --verbose --python 3.8 -r requirements.txt --skip-lock && \
     rm -rf ~/.cache
 
