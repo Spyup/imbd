@@ -1,4 +1,4 @@
-FROM docker.io/nvidia/cuda:11.7.0-cudnn8-devel-ubuntu22.04
+FROM docker.io/nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 MAINTAINER Spyup <jason88tu@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
