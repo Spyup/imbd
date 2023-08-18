@@ -43,3 +43,4 @@ xlrd==2.0.1
 xlutils==2.0.0
 xlwt==1.3.0
 yolo==0.3.2
+timm
