@@ -92,6 +92,9 @@ RUN groupadd imbduser && \
     chown -R root:imbduser /envs && \
     chmod -R 770 /envs
 
+WORKDIR /envs/yolov7
+RUN wget -4 https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
+
 WORKDIR /envs
 COPY testYolov7.sh testYolov7.sh
 
