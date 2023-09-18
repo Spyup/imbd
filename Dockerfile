@@ -88,10 +88,12 @@ RUN Rscript -e "options('repos' = c(CRAN='https://cran.csie.ntu.edu.tw/'))"
 RUN Rscript -e "install.packages(c('xgboost', 'readxl', 'xlsx', 'tidyverse', 'klaR', 'ClusterR', 'pracma', 'fields', 'filehashSQLite', 'filehash', 'LatticeKrig', 'spam', 'RSpectra', 'filematrix', 'autoFRK', 'Metrics', 'adabag', 'neuralnet', 'caTools', 'nnet', 'caret', 'ada', 'randomForest', 'inTrees', 'UBL', 'cvTools', 'gdata', 'moments', 'zoo', 'MASS', 'chemometrics', 'rpart', 'e1071'))"
 
 ### change permission and create group for user
-
 RUN groupadd imbduser && \
     chown -R root:imbduser /envs && \
     chmod -R 770 /envs
+
+WORKDIR /envs
+COPY testYolov7.sh testYolov7.sh
 
 WORKDIR /envs
 
