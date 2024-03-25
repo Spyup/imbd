@@ -20,11 +20,11 @@ RUN apt install -y software-properties-common && \
     cd /usr/bin/ ; rm python3 ; ln -s python3.10 python3
 
 ### Python3.8
-RUN add-apt-repository ppa:deadsnakes/ppa -y && \
-    apt update -y && \
-    apt-get install python3.8 -y && \
-    apt-get install python3.8-distutils -y && \
-    apt clean
+#RUN add-apt-repository ppa:deadsnakes/ppa -y && \
+#    apt update -y && \
+#    apt-get install python3.8 -y && \
+#    apt-get install python3.8-distutils -y && \
+#    apt clean
 
 ### Pip3 && pipenv
 RUN apt install -y python3-pip && \
@@ -61,7 +61,7 @@ RUN pipenv install --verbose --python 3.10 -r requirements.txt --skip-lock && \
 WORKDIR /envs
 RUN git clone https://github.com/WongKinYiu/yolov7.git
 WORKDIR yolov7
-RUN pipenv install --verbose --python 3.8 -r requirements.txt --skip-lock && \
+RUN pipenv install --verbose --python 3.10 -r requirements.txt --skip-lock && \
     rm -rf ~/.cache
 
 WORKDIR /envs
