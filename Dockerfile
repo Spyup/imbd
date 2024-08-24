@@ -1,4 +1,5 @@
-FROM docker.io/nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+### nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
+FROM docker.io/nvidia/cuda@sha256:217134b60289ced62b47463be32584329baf35cb55a9ccda6626b91bd59803be
 MAINTAINER Spyup <jason88tu@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -9,15 +10,8 @@ RUN apt update && apt upgrade -y && \
     apt install -y iputils-ping && \
     apt install -y vim nano && \
     apt install -y openssh-server && \
-    apt install -y git zip htop screen libgl1-mesa-glx && \    
+    apt install -y git zip htop screen && \    
     apt clean
-
-### Python3.10
-RUN apt install -y software-properties-common && \
-    apt update -y && \
-    apt-get install python3.10 -y && \
-    apt clean && \
-    cd /usr/bin/ ; rm python3 ; ln -s python3.10 python3
 
 ### Pip3 && pipenv
 RUN apt install -y python3-pip && \
@@ -27,19 +21,36 @@ RUN pip3 install -U pip
 RUN pip3 install -U setuptools
 RUN pip3 install pipenv
 
-### Build Env (Pytorch version)
 ENV WORKON_HOME /envs
 RUN mkdir /envs
 
 ENV PIPENV_TIMEOUT 9999
 ENV PIPENV_INSTALL_TIMEOUT 9999
 
+### Build Env (Pytorch version)
+WORKDIR /envs
+RUN mkdir pytorch
+COPY pytorch_version.txt pytorch/requirements.txt
+WORKDIR pytorch
+RUN pipenv install --python 3.10 -r requirements.txt --skip-lock && \
+    rm -rf ~/.cache
+
+### Build Env (Tensorflow_keras)
+WORKDIR /envs
+RUN mkdir tf_keras
+COPY tf_keras_version.txt tf_keras/requirements.txt
+WORKDIR tf_keras
+RUN pipenv install --python 3.10 -r requirements.txt --skip-lock && \
+    rm -rf ~/.cache
+
 ### Build Env (Yolov7 version)
 WORKDIR /envs
-RUN git clone https://github.com/WongKinYiu/yolov7.git
+RUN git clone https://github.com/WongKinYiu/yolov7.git --depth 1
 WORKDIR yolov7
-RUN pipenv install --verbose --python 3.10 -r requirements.txt --skip-lock && \
-    rm -rf ~/.cache
+RUN git fetch --unshallow && \
+    pipenv install --verbose --python 3.10 -r requirements.txt --skip-lock && \
+    rm -rf ~/.cache && \
+    wget -4 https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
 
 WORKDIR /envs
 
@@ -56,17 +67,25 @@ ENV CUDA_PATH /usr/local/cuda
 ENV PATH=${CUDA_PATH}/bin:${JAVA_HOME}/bin:$PATH
 COPY profile /etc/profile
 
+### Build Env (R version)
+### R dependence
+WORKDIR /envs
+RUN apt install -y liblzma-dev libbz2-dev libicu-dev libxml2-dev libssl-dev libcurl4-openssl-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev gfortran liblapack-dev libblas-dev libgmp-dev libudunits2-dev gdal-bin libgdal-dev && \
+    apt clean
+RUN wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | gpg --dearmor -o /usr/share/keyrings/r-project.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/r-project.gpg] https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/" | tee -a /etc/apt/sources.list.d/r-project.list
+RUN apt update && \
+    apt install -y --no-install-recommends r-base
+RUN R CMD javareconf
+COPY r_requirement.txt .
+COPY installPackage.R .
+RUN Rscript installPackage.R
+
 ### change permission and create group for user
 
 RUN groupadd imbduser && \
     chown -R root:imbduser /envs && \
     chmod -R 770 /envs
-
-WORKDIR /envs/yolov7
-RUN wget -4 https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
-
-WORKDIR /envs
-COPY testYolov7.sh testYolov7.sh
 
 WORKDIR /envs
 
